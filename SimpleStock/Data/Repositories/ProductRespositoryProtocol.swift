@@ -10,6 +10,6 @@ protocol ProductRespositoryProtocol {
     func getProducts(
         limit: Int,
         skip: Int
-    ) async throws -> [ProductRemoteDTO]
+    ) async throws -> [ProductDTO]
     
 }

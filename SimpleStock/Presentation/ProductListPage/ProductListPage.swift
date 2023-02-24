@@ -24,7 +24,9 @@ struct ProductListPage: View {
                     action: loadData
                 )
             case .success(let data):
-                ProductListPage.SuccessView(products: data)
+                ProductListPage.SuccessView(
+                    products: data,
+                    loadMore: viewModel.loadMore)
             default:
                 ProductListPage.EmptyStateView(
                     action: loadData
@@ -37,7 +39,7 @@ struct ProductListPage: View {
     }
     
     func loadData() {
-        Task { await viewModel.loadData() }
+        Task { await viewModel.loadInitialData() }
     }
 }
 

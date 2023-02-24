@@ -15,10 +15,6 @@ struct SimpleStockApp: App {
             NavigationView {
                 ProductListPage()
             }
-            
-            
-           
-           
         }
     }
 }

@@ -9,10 +9,10 @@ import Resolver
 
 extension Resolver {
     
+    @MainActor
     public static func registerDataServices() {
         
         register { ProductRemoteDataSource() as ProductRemoteDataSourceProtocol }
-        register { ProductLocalDataSource() as ProductLocalDataSourceProtocol }
         register { ProductLocalDataSource() as ProductLocalDataSourceProtocol }
         register {
             ProductRespository(

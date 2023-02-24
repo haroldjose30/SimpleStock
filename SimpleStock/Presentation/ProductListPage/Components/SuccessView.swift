@@ -11,7 +11,9 @@ extension ProductListPage {
     
     struct SuccessView: View {
         
-        var products: [ProductModel]
+        @State private var isLoading: Bool = false
+        @State var products: [ProductModel]
+        var loadMore: () async -> [ProductModel]
         
         var body: some View {
             
@@ -25,7 +27,16 @@ extension ProductListPage {
                         ) {
                             ProductListPage.CardView(
                                 product: product
-                            )
+                            ).onAppear {
+                                if product == products.last {
+                                    isLoading = true
+                                    Task {
+                                        let newList = await loadMore()
+                                        products.append(contentsOf: newList)
+                                        isLoading = false
+                                    }
+                                }
+                            }
                         }
                         
                     }
@@ -94,7 +105,8 @@ extension ProductListPage {
 struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
         ProductListPage.SuccessView(
-            products: getProductsForPreview()
+            products: getProductsForPreview(),
+            loadMore: {[]}
         )
     }
 }

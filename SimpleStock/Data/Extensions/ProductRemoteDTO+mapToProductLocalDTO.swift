@@ -1,18 +1,20 @@
 //
-//  ProductRemoteDTO+mapToModel.swift
+//  ProductRemoteDTO+mapToProductLocalDTO.swift
 //  SimpleStock
 //
-//  Created by Jose Harold on 22/02/2023.
+//  Created by Jose Harold on 23/02/2023.
 //
+
+import RealmSwift
 
 extension ProductRemoteDTO {
     
-    func mapToModel() -> ProductModel {
+    func mapToProductLocalDTO() -> ProductLocalDTO {
         
-        ProductModel(
+        ProductLocalDTO(
             id: self.id,
             title: self.title,
-            description: self.description,
+            descr: self.description,
             price: self.price,
             discountPercentage: self.discountPercentage,
             rating: self.rating,
@@ -20,7 +22,7 @@ extension ProductRemoteDTO {
             brand: self.brand,
             category: self.category,
             thumbnail: self.thumbnail,
-            images: self.images
+            images: self.images.mapToList()
         )
     }
 }

@@ -11,8 +11,8 @@ import Combine
 @MainActor
 class ProductListPageViewModel: ObservableObject {
     
-    @Published var pageState: PageState<[ProductModel]> = .empty
-    private var skip: Int = 0
+    @Published var pageState: PageState<[ProductModel]> = .loading
+    private var skipState: Int = 0
     
     private let getProductsUseCase: GetProductsUseCaseProtocol
     
@@ -23,15 +23,14 @@ class ProductListPageViewModel: ObservableObject {
         self.getProductsUseCase = getProductsUseCase
     }
     
-    func loadData() async {
+    func loadInitialData() async {
         
         pageState = .loading
         do {
-            let products = try await getProductsUseCase.execute(
-                limit: Constants.limit,
-                skip: skip
+            skipState = 0
+            let products = try await loadData(
+                toSkip: skipState
             )
-            skip += 1
             
             pageState = products.isEmpty ?
                 .empty :
@@ -42,6 +41,35 @@ class ProductListPageViewModel: ObservableObject {
         }
     }
     
+    
+    func loadMore() async -> [ProductModel] {
+        
+        do {
+            let products = try await loadData(
+                toSkip: skipState + Constants.limit
+            )
+            
+            if !products.isEmpty {
+                skipState += Constants.limit
+            }
+            return products
+            
+        } catch {
+            pageState = .failure(message: Localizable.genericError)
+        }
+        
+        return []
+    }
+    
+    private func loadData(toSkip: Int) async throws -> [ProductModel] {
+        
+        let products = try await getProductsUseCase.execute(
+            limit: Constants.limit,
+            skip: toSkip
+        )
+        
+        return products
+    }
 }
 
 extension ProductListPageViewModel {
